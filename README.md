@@ -1,4 +1,4 @@
-# How I  Located the closest shape "Hidden Areas" to a random point 🧠🤯 
+# How I  Located the closest Hidden Areas to a random point 🧠🤯 
 
 ![task](https://user-images.githubusercontent.com/59293857/217959014-66b20c4d-a63a-4a9b-8540-daabced427a0.png)
 
