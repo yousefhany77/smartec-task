@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import useImageEditor from "../hooks/useImageEditor";
 import SelectionArea from "./SelectionArea";
 import useImage from "../hooks/useImage";
@@ -17,6 +17,8 @@ import Overlay from "./Overlay";
 function ImageEditor() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const resizeSelectionAreaRef = useRef<HTMLSpanElement>(null);
+  const [loading, setLoading] = useState(false);
+
   const { contextRef, image, handleImageUpload, hasImage } = useImage({
     canvasRef,
   });
@@ -38,18 +40,62 @@ function ImageEditor() {
     contextRef,
     image,
   });
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (!canvasRef.current) return;
-    const link = document.createElement("a");
-    link.download = "image.png";
-    link.href = canvasRef.current.toDataURL();
-    link.click();
+    setLoading(true);
+    try {
+      const link = document.createElement("a");
+      link.download = "image.png";
+      link.href = await getDataURL();
+      link.click();
+    } finally {
+      setLoading(false);
+    }
   };
+
+  async function getDataURL(): Promise<string> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        if (!canvasRef.current) return;
+        resolve(canvasRef.current.toDataURL());
+      }, 500);
+    });
+  }
 
   return (
     <section className="grid grid-cols-1 gap-y-12  lg:gap-x-8  lg:grid-cols-3 w-full min-h-screen p-10">
+      <section
+        className={` ${
+          hasImage ? "col-span-2" : "col-span-3"
+        } bg-zinc-700 rounded-md  overflow-auto p-5  flex justify-center-center relative `}
+      >
+        <div className=" relative m-auto   ">
+          {!hasImage && (
+            <Overlay>
+              <InputUploadFile handleUpload={handleImageUpload} />
+            </Overlay>
+          )}
+          <canvas
+            className=" shadow-md  rounded-md   bg-white "
+            width={"800px"}
+            height={"600px"}
+            ref={canvasRef}
+          />
+          {isSelecting && (
+            <SelectionArea
+              resizeSelectionAreaRef={resizeSelectionAreaRef}
+              set={set}
+              bind={bind}
+              height={height}
+              width={width}
+              x={x}
+              y={y}
+            />
+          )}
+        </div>
+      </section>
       {hasImage ? (
-        <div className="grid grid-cols-1 grid-rows-[1fr_repeat(3,auto)_1fr_auto]  gap-4 items-center justify-center order-2 lg:order-1 h-5/6 my-auto  z-[101]">
+        <div className="grid grid-cols-1 grid-rows-[1fr_repeat(3,auto)_1fr_auto]  gap-4 items-center justify-center  h-5/6 my-auto  z-[101]">
           <h1 className="font-extrabold text-5xl text-center ">Controls</h1>
 
           <button
@@ -95,40 +141,11 @@ function ImageEditor() {
           />
           <DownloadButton
             onClick={handleDownload}
-            className="justify-self-end"
+            className={`justify-self-end`}
+            loading={loading}
           />
         </div>
       ) : null}
-      <section
-        className={` ${
-          hasImage ? "col-span-2" : "col-span-3"
-        } bg-zinc-700 rounded-md  overflow-auto p-5  flex justify-center-center relative order-1 lg:order-2`}
-      >
-        <div className=" relative m-auto   ">
-          {!hasImage && (
-            <Overlay>
-              <InputUploadFile handleUpload={handleImageUpload} />
-            </Overlay>
-          )}
-          <canvas
-            className=" shadow-md  rounded-md   bg-white "
-            width={"800px"}
-            height={"600px"}
-            ref={canvasRef}
-          />
-          {isSelecting && (
-            <SelectionArea
-              resizeSelectionAreaRef={resizeSelectionAreaRef}
-              set={set}
-              bind={bind}
-              height={height}
-              width={width}
-              x={x}
-              y={y}
-            />
-          )}
-        </div>
-      </section>
     </section>
   );
 }
