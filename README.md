@@ -1,8 +1,7 @@
-## smartec-task
+# How I  Located the closest shape "Hidden Areas" to a random point 🧠🤯 
 
 ![task](https://user-images.githubusercontent.com/59293857/217959014-66b20c4d-a63a-4a9b-8540-daabced427a0.png)
 
-# How I  Located the closest shape "Hidden Areas" to a random point 🧠🤯 
 The center of a rectangle is the point that is equidistant from all four corners of the rectangle. 
 In this case, the rectangle is represented by two points (x1, y1) and (x2, y2). 
 To calculate the center of the rectangle, you find the midpoint between x1 and x2 and the midpoint between y1 and y2:
