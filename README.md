@@ -25,3 +25,24 @@ So in the case of the locatePoint function, we use the formula above to calculat
 
 
 
+```typescript
+function locatePoint(x: number, y: number, shapes: Shape[]): Shape | null {
+  let closestShape: Shape | null = null;
+  let closestDistance = Infinity;
+
+  for (const shape of shapes) {
+    if (x >= shape.x1 && x <= shape.x2 && y >= shape.y1 && y <= shape.y2) {
+      const centerX = (shape.x1 + shape.x2) / 2;
+      const centerY = (shape.y1 + shape.y2) / 2;
+      const distance = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2);
+
+      if (distance < closestDistance) {
+        closestShape = shape;
+        closestDistance = distance;
+      }
+    }
+  }
+
+  return closestShape;
+}
+```
