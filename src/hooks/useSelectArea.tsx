@@ -1,12 +1,23 @@
 import { useSpring } from "@react-spring/web";
 import { useDrag } from "@use-gesture/react";
-import React, { useRef } from "react";
+import React from "react";
+import { useCanvasContext } from "../context/canvasContext";
 interface Props {
-  canvasRef: React.RefObject<HTMLCanvasElement>;
+  resizeSelectionAreaRef: React.RefObject<HTMLSpanElement>;
 }
-function useSelectArea({ canvasRef }: Props) {
-  const resizeSelectionAreaRef = useRef<HTMLSpanElement>(null);
 
+/*
+  * This hook is responsible for handling the drag and resize events for the selection area.
+  * The hook returns the bind function, which is used to bind the drag and resize events to the selection area element.
+  * The hook also returns the x, y, width, and height  values of the selection area, which this component uses to position and size the selection area.
+  * set function is used to update the x, y, width, and height values of the selection area.
+  * the hook gets the canvasRef from the useCanvasContext hook.
+
+  * 
+*/
+function useSelectArea({ resizeSelectionAreaRef }: Props) {
+  const { getCanvasRef } = useCanvasContext();
+  const canvasRef = getCanvasRef();
   const [{ x, y, width, height }, set] = useSpring(() => ({
     x: 0,
     y: 0,
@@ -39,23 +50,29 @@ function useSelectArea({ canvasRef }: Props) {
       },
 
       bounds: (state) => {
-        const canvasWidth = canvasRef.current?.clientWidth ?? 0;
-        const canvasHeight = canvasRef.current?.clientHeight ?? 0;
-        const isResizing =
-          state?.event.target === resizeSelectionAreaRef.current;
-        if (isResizing) {
+        if (canvasRef) {
+          const canvasWidth = canvasRef.current?.clientWidth ?? 0;
+          const canvasHeight = canvasRef.current?.clientHeight ?? 0;
+          const isResizing =
+            state?.event.target === resizeSelectionAreaRef.current;
+          if (isResizing) {
+            return {
+              top: 10,
+              left: 10,
+              right: canvasWidth - x.get(),
+              bottom: canvasHeight - y.get(),
+            };
+          }
           return {
-            top: 10,
-            left: 10,
-            right: canvasWidth - x.get(),
-            bottom: canvasHeight - y.get(),
+            top: 0,
+            left: 0,
+            right: canvasWidth - width.get(),
+            bottom: canvasHeight - height.get(),
           };
         }
         return {
           top: 0,
           left: 0,
-          right: canvasWidth - width.get(),
-          bottom: canvasHeight - height.get(),
         };
       },
     }
@@ -67,7 +84,7 @@ function useSelectArea({ canvasRef }: Props) {
     y,
     width,
     height,
+    set,
   };
 }
-
 export default useSelectArea;

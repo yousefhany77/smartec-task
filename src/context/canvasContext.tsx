@@ -6,14 +6,14 @@ import {
   ReactNode,
 } from "react";
 
-type TCanvasRef = React.RefObject<HTMLCanvasElement>;
+export type TCanvasRef = React.RefObject<HTMLCanvasElement>;
 type TCanvasContext = {
-  getCanvasRef: () => React.MutableRefObject<TCanvasRef | undefined> | null;
+  getCanvasRef: () => TCanvasRef | undefined;
   setCanvasRef: (canvasRef: TCanvasRef) => void;
 };
 
 const CanvasContext = createContext<TCanvasContext>({
-  getCanvasRef: () => null,
+  getCanvasRef: () => undefined,
   setCanvasRef(canvasRef) {},
 });
 
@@ -26,7 +26,7 @@ export default function CanvasProvider({
 }) {
   const canvasRef = useRef<TCanvasRef>();
   const getCanvasRef = useCallback(() => {
-    return canvasRef;
+    return canvasRef.current;
   }, []);
   const setCanvasRef = useCallback((ref: TCanvasRef) => {
     canvasRef.current = ref;
@@ -43,4 +43,3 @@ export default function CanvasProvider({
     </CanvasContext.Provider>
   );
 }
-
