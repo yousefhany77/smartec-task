@@ -15,6 +15,7 @@ const centerY = (y1 + y2) / 2;
 The distance between two points (x1, y1) and (x2, y2) can be calculated using the Pythagorean theorem. 
 The theorem states that the distance between two points in a two-dimensional plane is given by the square root of the sum of the squares of the differences of the x-coordinates and the y-coordinates of the points:
 
+javascript
 ```
 const distance = Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
 ```
