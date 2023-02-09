@@ -1,6 +1,6 @@
 # How I  Located the closest Hidden Areas to a random point 🧠🤯 
 
-![task](https://user-images.githubusercontent.com/59293857/217959014-66b20c4d-a63a-4a9b-8540-daabced427a0.png)
+
 
 The center of a rectangle is the point that is equidistant from all four corners of the rectangle. 
 In this case, the rectangle is represented by two points (x1, y1) and (x2, y2). 
